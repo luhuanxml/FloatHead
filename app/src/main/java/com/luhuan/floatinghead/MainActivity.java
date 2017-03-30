@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         for (int i = 0; i < 50; i++) {
             list.add("item"+i);
         }
-        final FloatAdapter floatAdapter=new FloatAdapter(list,this);
+        FloatAdapter floatAdapter=new FloatAdapter(list,this.getApplicationContext());
         //200dp是普通header的高度
         maxDist = DP.d2p(this,200);
         FloatHelper.getInstance(this.getApplicationContext())
