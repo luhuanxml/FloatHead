@@ -1,0 +1,99 @@
+package com.luhuan.floatinghead;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+
+/**
+ * Created by luhuan on 2017/3/30 0030.
+ *
+ */
+
+public class FloatHelper {
+    private RecyclerView recyclerView;
+    private View floatHead;
+    private GridLayoutManager manager;
+
+    private int spanCount;
+
+    @SuppressLint("StaticFieldLeak")
+    private volatile static FloatHelper instance;
+    /**
+     * dy变化后的总变化值
+     */
+    private int totalChange;
+
+    private Context context;
+
+    private FloatHelper(Context context) {
+        this.context=context;
+    }
+
+    public static FloatHelper getInstance(Context context){
+        if (instance == null) {
+            synchronized (FloatHelper.class){
+                if (instance == null) {
+                    instance=new FloatHelper(context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * @param recyclerView
+     * @param floatHead  //要进行管理的悬停头部view
+     */
+    public FloatHelper prepare(RecyclerView recyclerView,View floatHead){
+        this.recyclerView = recyclerView;
+        this.floatHead = floatHead;
+        return instance;
+    }
+
+    /**
+     * 默认使用 GridLayoutManager
+     * @param spanCount GridLayoutManager 设置的一排的并列数
+     * @param adapter 这里直接传入Adapter给recyclerview去设置，防止方法用在setAdapter()之后
+     * @return instance
+     */
+    public FloatHelper setManagerAndAdapter(final int spanCount, RecyclerView.Adapter adapter){
+        this.spanCount=spanCount;
+        manager=new GridLayoutManager(context,spanCount);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+        return instance;
+    }
+
+    /**
+     * @param maxDistPx  需要悬浮的头部到屏幕顶部(不包括状态栏)的距离，单位px
+     */
+    public void setFloatHead(final int maxDistPx){
+        floatHead.setTranslationY(maxDistPx);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.d("y", "onScrolled: "+dy);
+                totalChange+=dy;
+                int tranY=Math.max(0, maxDistPx -totalChange);
+                //移动距离超过maxDist，就定在0处
+                floatHead.setTranslationY(tranY);
+                //lastPosition 是最后从屏幕中出现的item 顶部的值是10*spanCount。
+                int lastPosition=manager.findLastVisibleItemPosition();
+                Log.d("yy", "onScrolled: "+lastPosition);
+                if (lastPosition <= 10*spanCount) {
+                    floatHead.setVisibility(View.GONE);
+                }else {
+                    floatHead.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+}

@@ -20,13 +20,7 @@ public class MainActivity extends Activity {
     TextView floatingHead;
 
     LayoutInflater inflater;
-
-    int totalChange;
     private int maxDist;
-    private GridLayoutManager manager;
-
-    int spanCount=3;
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -43,23 +37,19 @@ public class MainActivity extends Activity {
         xRecyclerView.addHeaderView(headimg);
         View headtext=inflater.inflate(R.layout.head_text,null);
         xRecyclerView.addHeaderView(headtext);
-
         List<String> list=new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             list.add("item"+i);
         }
-        manager = new GridLayoutManager(this,spanCount);
-        xRecyclerView.setLayoutManager(manager);
         final FloatAdapter floatAdapter=new FloatAdapter(list,this);
-        xRecyclerView.setAdapter(floatAdapter);
-
         //200dp是普通header的高度
         maxDist = DP.d2p(this,200);
-        floatingHead.setTranslationY(maxDist);
-
+        FloatHelper.getInstance(this.getApplicationContext())
+                .prepare(xRecyclerView,floatingHead)
+                .setManagerAndAdapter(2,floatAdapter)
+                .setFloatHead(maxDist);
         xRecyclerView.setPullRefreshEnabled(true);
         xRecyclerView.setLoadingMoreEnabled(true);
-
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
@@ -69,30 +59,6 @@ public class MainActivity extends Activity {
             @Override
             public void onLoadMore() {
                 xRecyclerView.loadMoreComplete();
-            }
-        });
-
-        xRecyclerView.setTop(0);
-        xRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.d("y", "onScrolled: "+dy);
-                totalChange+=dy;
-                int tranY=Math.max(0, maxDist -totalChange);
-                //移动距离超过maxDist，就定在0处  ,barHeight是appbar的高度，必须加上
-                floatingHead.setTranslationY(tranY);
-                int lastPosition=manager.findLastVisibleItemPosition();
-                Log.d("yy", "onScrolled: "+lastPosition);
-                if (lastPosition <= 10*spanCount) {
-                    floatingHead.setVisibility(View.GONE);
-                }else {
-                    floatingHead.setVisibility(View.VISIBLE);
-                }
             }
         });
     }
