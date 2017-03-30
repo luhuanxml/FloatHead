@@ -13,20 +13,20 @@ import android.view.View;
  */
 
 public class FloatHelper {
+    @SuppressLint("StaticFieldLeak")
+    private volatile static FloatHelper instance;
+
     private RecyclerView recyclerView;
     private View floatHead;
     private GridLayoutManager manager;
 
-    private int spanCount;
+    private Context context;
 
-    @SuppressLint("StaticFieldLeak")
-    private volatile static FloatHelper instance;
+    private int spanCount;
     /**
      * dy recyclerview的滑动距离 不停的累记dy这个值
      */
     private int totalChange;
-
-    private Context context;
 
     private FloatHelper(Context context) {
         this.context = context;
