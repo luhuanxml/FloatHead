@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FloatingHead</string>
+    <string name="true_head">粘性头部</string>
+    <string name="false_head">粘性头部</string>
+</resources>
