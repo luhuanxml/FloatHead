@@ -6,8 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tencent.stat.StatService;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Administrator on 2017/3/30 0030.
@@ -30,8 +35,13 @@ public class FloatAdapter extends RecyclerView.Adapter<FloatAdapter.FloadViewHol
     }
 
     @Override
-    public void onBindViewHolder(FloadViewHolder holder, int position) {
+    public void onBindViewHolder(FloadViewHolder holder, final int position) {
         holder.item.setText(list.get(position));
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
 
 
@@ -41,11 +51,11 @@ public class FloatAdapter extends RecyclerView.Adapter<FloatAdapter.FloadViewHol
     }
 
     class FloadViewHolder extends RecyclerView.ViewHolder{
-        Button item;
+        TextView item;
 
         public FloadViewHolder(View itemView) {
             super(itemView);
-            item= (Button) itemView.findViewById(R.id.item);
+            item= (TextView) itemView.findViewById(R.id.item);
         }
     }
 }

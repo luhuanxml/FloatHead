@@ -10,6 +10,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+        }
     }
     buildTypes {
         release {
@@ -26,4 +31,6 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.jcodecraeer:xrecyclerview:1.2.7'
+    compile files('libs/mid-core-sdk-3.7.1.jar')
+    compile files('libs/mta-android-stat-sdk-2.3.0_20161221-jdk1.6.jar')
 }
